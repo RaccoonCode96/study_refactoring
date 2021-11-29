@@ -4,26 +4,30 @@
  */
 
 function amoutFor(perf, play) {
+	/*
+	 * - 함수의 반환 값에는 항상 result를 사용한다.
+	 */
+
 	// 합을 구한다.
-	let thisAmount = 0;
+	let result = 0;
 	switch (play.type) {
 		case 'tragedy': // 비극
-			thisAmount = 40000;
+			result = 40000;
 			if (perf.audience > 30) {
-				thisAmount += 1000 * (perf.audience - 30);
+				result += 1000 * (perf.audience - 30);
 			}
 			break;
 		case 'comedy': // 희극
-			thisAmount = 30000;
+			result = 30000;
 			if (perf.audience > 20) {
-				thisAmount += 10000 + 500 * (perf.audience - 20);
+				result += 10000 + 500 * (perf.audience - 20);
 			}
-			thisAmount += 300 * perf.audience;
+			result += 300 * perf.audience;
 			break;
 		default:
 			throw new Error(`알 수 없는 장르: ${play.type}`);
 	}
-	return thisAmount;
+	return result;
 }
 
 function statement(invoice, plays) {
@@ -62,9 +66,10 @@ const plays = require('./plays.json');
 console.log(statement(invoices[0], plays));
 
 /* 
-Hamlet: $650.00 (55석)
-As You Like It: $1,305.00 (35석)
-Othello: $500.00 (40석)
-총액: $2,455.00
+청구 내역 (고객명: BigCo)
+ Hamlet: $650.00 (55석)
+ As You Like It: $580.00 (35석)
+ Othello: $500.00 (40석)
+총액: $1,730.00
 적립 포인트: 47점
 */
