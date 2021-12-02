@@ -6,15 +6,20 @@
  * - 함수 선언 바꾸기 : 핵심 느낌을 살릴 수 있는 식별자로 변경
  */
 
-function statement(invoice) {
+function statement(invoice, plays) {
 	const statementData = {};
 	statementData.customer = invoice.customer;
 	statementData.performances = invoice.performances.map(enrichPerformance);
 
 	return renderPlainText(statementData);
 
+	function playFor(aPerformance) {
+		return plays[aPerformance.playID];
+	}
+
 	function enrichPerformance(aPerformance) {
 		const result = Object.assign({}, aPerformance); // 얕은 복사
+		result.play = playFor(result);
 		return result;
 	}
 }
@@ -23,7 +28,7 @@ function renderPlainText(data) {
 	let result = `청구 내역 (고객명: ${data.customer})\n`;
 
 	for (let perf of data.performances) {
-		result += ` ${playFor(perf).name}: ${usd(amoutFor(perf))} (${
+		result += ` ${perf.play.name}: ${usd(amoutFor(perf))} (${
 			perf.audience
 		}석)\n`;
 	}
@@ -76,15 +81,11 @@ function renderPlainText(data) {
 
 	/* -------------------------------------------------------------- */
 
-	function playFor(aPerformance) {
-		return plays[aPerformance.playID];
-	}
-
 	/* -------------------------------------------------------------- */
 
 	function amoutFor(aPerformance) {
 		let result = 0;
-		switch (playFor(aPerformance).type) {
+		switch (aPerformance.play.type) {
 			case 'tragedy': // 비극
 				result = 40000;
 				if (aPerformance.audience > 30) {
@@ -99,7 +100,7 @@ function renderPlainText(data) {
 				result += 300 * aPerformance.audience;
 				break;
 			default:
-				throw new Error(`알 수 없는 장르: ${playFor(aPerformance).type}`);
+				throw new Error(`알 수 없는 장르: ${aPerformance.play.type}`);
 		}
 		return result;
 	}
@@ -112,7 +113,7 @@ const plays = require('./plays.json');
 
 console.log(
 	`✅ Test Result : ${
-		statement(invoices[0]) ===
+		statement(invoices[0], plays) ===
 		'청구 내역 (고객명: BigCo)\n' +
 			' Hamlet: $650.00 (55석)\n' +
 			' As You Like It: $580.00 (35석)\n' +
