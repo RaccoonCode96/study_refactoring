@@ -7,28 +7,32 @@
  */
 
 function statement(invoice) {
-	return renderPlainText(invoice);
+	const statementData = {};
+	statementData.customer = invoice.customer;
+	statementData.performances = invoice.performances;
+
+	return renderPlainText(statementData);
 }
 /* -------------------------------------------------------------- */
-function renderPlainText(invoice) {
-	let result = `청구 내역 (고객명: ${invoice.customer})\n`;
+function renderPlainText(data) {
+	let result = `청구 내역 (고객명: ${data.customer})\n`;
 
-	for (let perf of invoice.performances) {
+	for (let perf of data.performances) {
 		result += ` ${playFor(perf).name}: ${usd(amoutFor(perf))} (${
 			perf.audience
 		}석)\n`;
 	}
 
-	result += `총액: ${usd(totalAmount(invoice))}\n`;
-	result += `적립 포인트: ${totalVolumeCredits(invoice)}점\n`;
+	result += `총액: ${usd(totalAmount())}\n`;
+	result += `적립 포인트: ${totalVolumeCredits()}점\n`;
 	return result;
 
 	/* -------------------------------------------------------------- */
 
-	function totalAmount(invoice) {
+	function totalAmount() {
 		// 반복문 쪼개기 & 문장 슬라이드 하기 & 함수 추출
 		let result = 0;
-		for (let perf of invoice.performances) {
+		for (let perf of data.performances) {
 			result += amoutFor(perf);
 		}
 		return result;
@@ -36,10 +40,10 @@ function renderPlainText(invoice) {
 
 	/* -------------------------------------------------------------- */
 
-	function totalVolumeCredits(invoice) {
+	function totalVolumeCredits() {
 		// 반복문 쪼개기 & 문장 슬라이드 하기 & 함수 추출
 		let result = 0;
-		for (let perf of invoice.performances) {
+		for (let perf of data.performances) {
 			result += volumeCreditsFor(perf);
 		}
 		return result;
