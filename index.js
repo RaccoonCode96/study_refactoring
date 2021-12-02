@@ -43,15 +43,19 @@ function volumeCreditsFor(aPerformance) {
 	return result;
 }
 
+// 함수 선언 바꾸기 : 핵심 느낌을 살릴 수 있는 식별자로 변경
+function usd(aNumber) {
+	return new Intl.NumberFormat('en-US', {
+		style: 'currency',
+		currency: 'USD',
+		minimumFractionDigits: 2,
+	}).format(aNumber / 100);
+}
+
 function statement(invoice) {
 	let totalAmount = 0;
 	let volumeCredits = 0;
 	let result = `청구 내역 (고객명: ${invoice.customer})\n`;
-	const format = new Intl.NumberFormat('en-US', {
-		style: 'currency',
-		currency: 'USD',
-		minimumFractionDigits: 2,
-	}).format;
 
 	for (let perf of invoice.performances) {
 		// 포인트를 적립한다.
@@ -59,13 +63,13 @@ function statement(invoice) {
 		volumeCredits += volumeCreditsFor(perf);
 
 		// 청구 내역을 출력한다.
-		result += ` ${playFor(perf).name}: ${format(amoutFor(perf) / 100)} (${
+		result += ` ${playFor(perf).name}: ${usd(amoutFor(perf))} (${
 			perf.audience
 		}석)\n`;
 		totalAmount += amoutFor(perf);
 	}
 
-	result += `총액: ${format(totalAmount / 100)}\n`;
+	result += `총액: ${usd(totalAmount)}\n`;
 	result += `적립 포인트: ${volumeCredits}점\n`;
 	return result;
 }
