@@ -7,6 +7,10 @@
  */
 
 function statement(invoice) {
+	return renderPlainText(invoice);
+}
+/* -------------------------------------------------------------- */
+function renderPlainText(invoice) {
 	let result = `청구 내역 (고객명: ${invoice.customer})\n`;
 
 	for (let perf of invoice.performances) {
