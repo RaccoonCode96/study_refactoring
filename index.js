@@ -16,21 +16,19 @@ function statement(invoice, plays) {
 	return renderPlainText(statementData);
 
 	function totalAmount(data) {
-		// 반복문 쪼개기 & 문장 슬라이드 하기 & 함수 추출
-		let result = 0;
-		for (let perf of data.performances) {
-			result += perf.amount;
-		}
-		return result;
+		// 반복문을 파이프라인으로 바꾸기
+		return data.performances.reduce(
+			(total, aPerformance) => total + aPerformance.amount,
+			0
+		);
 	}
 
 	function totalVolumeCredits(data) {
-		// 반복문 쪼개기 & 문장 슬라이드 하기 & 함수 추출
-		let result = 0;
-		for (let perf of data.performances) {
-			result += perf.volumeCredits;
-		}
-		return result;
+		// 반복문을 파이프라인으로 바꾸기
+		return data.performances.reduce(
+			(total, aPerformance) => total + aPerformance.volumeCredits,
+			0
+		);
 	}
 
 	function enrichPerformance(aPerformance) {
@@ -75,7 +73,9 @@ function statement(invoice, plays) {
 		}
 	}
 }
+
 /* -------------------------------------------------------------- */
+
 function renderPlainText(data) {
 	let result = `청구 내역 (고객명: ${data.customer})\n`;
 
@@ -86,12 +86,6 @@ function renderPlainText(data) {
 	result += `총액: ${usd(data.totalAmount)}\n`;
 	result += `적립 포인트: ${data.totalVolumeCredits}점\n`;
 	return result;
-
-	/* -------------------------------------------------------------- */
-
-	/* -------------------------------------------------------------- */
-
-	/* -------------------------------------------------------------- */
 
 	function usd(aNumber) {
 		return new Intl.NumberFormat('en-US', {
