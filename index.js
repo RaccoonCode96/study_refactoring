@@ -52,15 +52,22 @@ function usd(aNumber) {
 	}).format(aNumber / 100);
 }
 
+function totalVolumeCredits(invoice) {
+	// 반복문 쪼개기 & 문장 슬라이드 하기
+	let volumeCredits = 0;
+	for (let perf of invoice.performances) {
+		volumeCredits += volumeCreditsFor(perf);
+	}
+	return volumeCredits;
+}
+
 function statement(invoice) {
 	let totalAmount = 0;
-	let volumeCredits = 0;
 	let result = `청구 내역 (고객명: ${invoice.customer})\n`;
 
 	for (let perf of invoice.performances) {
 		// 포인트를 적립한다.
 		// 희극 관객 5명마다 추가 포인트를 제공한다.
-		volumeCredits += volumeCreditsFor(perf);
 
 		// 청구 내역을 출력한다.
 		result += ` ${playFor(perf).name}: ${usd(amoutFor(perf))} (${
@@ -70,7 +77,7 @@ function statement(invoice) {
 	}
 
 	result += `총액: ${usd(totalAmount)}\n`;
-	result += `적립 포인트: ${volumeCredits}점\n`;
+	result += `적립 포인트: ${totalVolumeCredits(invoice)}점\n`;
 	return result;
 }
 
