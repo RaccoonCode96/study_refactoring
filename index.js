@@ -9,9 +9,14 @@
 function statement(invoice) {
 	const statementData = {};
 	statementData.customer = invoice.customer;
-	statementData.performances = invoice.performances;
+	statementData.performances = invoice.performances.map(enrichPerformance);
 
 	return renderPlainText(statementData);
+
+	function enrichPerformance(aPerformance) {
+		const result = Object.assign({}, aPerformance); // 얕은 복사
+		return result;
+	}
 }
 /* -------------------------------------------------------------- */
 function renderPlainText(data) {
