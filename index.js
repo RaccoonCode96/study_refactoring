@@ -10,8 +10,26 @@ function statement(invoice, plays) {
 	const statementData = {};
 	statementData.customer = invoice.customer;
 	statementData.performances = invoice.performances.map(enrichPerformance);
+	statementData.totalAmount = totalAmount(statementData);
 
 	return renderPlainText(statementData);
+
+	function totalAmount(data) {
+		// 반복문 쪼개기 & 문장 슬라이드 하기 & 함수 추출
+		let result = 0;
+		for (let perf of data.performances) {
+			result += perf.amount;
+		}
+		return result;
+	}
+
+	function volumeCreditsFor(aPerformance) {
+		let result = 0;
+		result += Math.max(aPerformance.audience - 30, 0);
+		if ('comedy' === aPerformance.play.type)
+			result += Math.floor(aPerformance.audience / 5);
+		return result;
+	}
 
 	function playFor(aPerformance) {
 		return plays[aPerformance.playID];
@@ -43,6 +61,7 @@ function statement(invoice, plays) {
 		const result = Object.assign({}, aPerformance); // 얕은 복사
 		result.play = playFor(result);
 		result.amount = amountFor(result);
+		result.volumeCredits = volumeCreditsFor(result);
 		return result;
 	}
 }
@@ -54,20 +73,11 @@ function renderPlainText(data) {
 		result += ` ${perf.play.name}: ${usd(perf.amount)} (${perf.audience}석)\n`;
 	}
 
-	result += `총액: ${usd(totalAmount())}\n`;
+	result += `총액: ${usd(data.totalAmount)}\n`;
 	result += `적립 포인트: ${totalVolumeCredits()}점\n`;
 	return result;
 
 	/* -------------------------------------------------------------- */
-
-	function totalAmount() {
-		// 반복문 쪼개기 & 문장 슬라이드 하기 & 함수 추출
-		let result = 0;
-		for (let perf of data.performances) {
-			result += perf.amount;
-		}
-		return result;
-	}
 
 	/* -------------------------------------------------------------- */
 
@@ -75,7 +85,7 @@ function renderPlainText(data) {
 		// 반복문 쪼개기 & 문장 슬라이드 하기 & 함수 추출
 		let result = 0;
 		for (let perf of data.performances) {
-			result += volumeCreditsFor(perf);
+			result += perf.volumeCredits;
 		}
 		return result;
 	}
@@ -89,20 +99,6 @@ function renderPlainText(data) {
 			minimumFractionDigits: 2,
 		}).format(aNumber / 100);
 	}
-
-	/* -------------------------------------------------------------- */
-
-	function volumeCreditsFor(aPerformance) {
-		let result = 0;
-		result += Math.max(aPerformance.audience - 30, 0);
-		if ('comedy' === aPerformance.play.type)
-			result += Math.floor(aPerformance.audience / 5);
-		return result;
-	}
-
-	/* -------------------------------------------------------------- */
-
-	/* -------------------------------------------------------------- */
 }
 
 /* --------------------------T E S T------------------------------------ */
