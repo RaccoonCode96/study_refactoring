@@ -5,15 +5,13 @@
  * - 함수의 반환 값에는 항상 result를 사용한다.
  * - 함수 선언 바꾸기 : 핵심 느낌을 살릴 수 있는 식별자로 변경
  */
-
-function statement(invoice, plays) {
+function createStatementData(invoice, plays) {
 	const statementData = {};
 	statementData.customer = invoice.customer;
 	statementData.performances = invoice.performances.map(enrichPerformance);
 	statementData.totalAmount = totalAmount(statementData);
 	statementData.totalVolumeCredits = totalVolumeCredits(statementData);
-
-	return renderPlainText(statementData);
+	return statementData;
 
 	function totalAmount(data) {
 		// 반복문을 파이프라인으로 바꾸기
@@ -96,6 +94,9 @@ function renderPlainText(data) {
 	}
 }
 
+function statement(invoice, plays) {
+	return renderPlainText(createStatementData(invoice, plays));
+}
 /* --------------------------T E S T------------------------------------ */
 
 const invoices = require('./invoices.json');
