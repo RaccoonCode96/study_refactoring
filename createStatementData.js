@@ -7,7 +7,7 @@ class PerformanceCalculator {
 
 	get amount() {
 		let result = 0;
-		switch (this.performance.play.type) {
+		switch (this.play.type) {
 			case 'tragedy': // 비극
 				result = 40000;
 				if (this.performance.audience > 30) {
@@ -59,7 +59,7 @@ exports.createStatementData = function (invoice, plays) {
 		);
 		const result = Object.assign({}, aPerformance); // 얕은 복사
 		result.play = calculator.play;
-		result.amount = amountFor(result);
+		result.amount = calculator.amount;
 		result.volumeCredits = volumeCreditsFor(result);
 		return result;
 
