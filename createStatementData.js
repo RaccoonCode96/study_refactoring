@@ -74,10 +74,5 @@ exports.createStatementData = function (invoice, plays) {
 		function playFor(aPerformance) {
 			return plays[aPerformance.playID];
 		}
-
-		function amountFor(aPerformance) {
-			return new PerformanceCalculator(aPerformance, playFor(aPerformance))
-				.amount;
-		}
 	}
 };
