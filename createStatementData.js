@@ -1,4 +1,9 @@
 // 조건부 로직을 다형성으로 바꾸기
+
+// 생성자를 팩터리 함수로 바꾸기(생성자가 서브클래스의 인스턴스를 반환할 수 없기 때문)
+function createPerformanceCalculator(aPerformance, aPlay) {
+	return new PerformanceCalculator(aPerformance, aPlay);
+}
 class PerformanceCalculator {
 	constructor(aPerformance, aPlay) {
 		this.performance = aPerformance;
@@ -61,7 +66,7 @@ exports.createStatementData = function (invoice, plays) {
 	}
 
 	function enrichPerformance(aPerformance) {
-		const calculator = new PerformanceCalculator(
+		const calculator = createPerformanceCalculator(
 			aPerformance,
 			playFor(aPerformance)
 		);
