@@ -1,3 +1,11 @@
+// 조건부 로직을 다형성으로 바꾸기
+class PerformanceCalculator {
+	constructor(aPerformance, aPlay) {
+		this.performance = aPerformance;
+		this.play = aPlay;
+	}
+}
+
 exports.createStatementData = function (invoice, plays) {
 	const statementData = {};
 	statementData.customer = invoice.customer;
@@ -23,8 +31,12 @@ exports.createStatementData = function (invoice, plays) {
 	}
 
 	function enrichPerformance(aPerformance) {
+		const calculator = new PerformanceCalculator(
+			aPerformance,
+			playFor(aPerformance)
+		);
 		const result = Object.assign({}, aPerformance); // 얕은 복사
-		result.play = playFor(result);
+		result.play = calculator.play;
 		result.amount = amountFor(result);
 		result.volumeCredits = volumeCreditsFor(result);
 		return result;
